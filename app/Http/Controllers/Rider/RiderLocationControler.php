@@ -12,6 +12,7 @@ use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class RiderLocationControler extends BaseController
@@ -47,16 +48,19 @@ class RiderLocationControler extends BaseController
 
                 $riders = RiderLocation::select('*')
                     ->selectRaw(
-                        "(6371  acos(cos(radians($latitude))  cos(radians(latitude))  cos(radians(longitude) - radians($longitude)) + sin(radians($latitude))  sin(radians(latitude)))) AS distance"
+                        "(6371 * ACOS(COS(RADIANS(?)) * COS(RADIANS(latitude)) * COS(RADIANS(longitude) - RADIANS(?)) + SIN(RADIANS(?)) * SIN(RADIANS(latitude))) AS distance"
                     )
                     ->having('distance', '<', $distance)
                     ->orderBy('distance')
                     ->whereBetween('capture_time', [$startTime, $endTime])
+                    ->setBindings([$latitude, $longitude, $latitude])
                     ->get();
             }
             return $this->sendSuccess($riders, $message);
         } catch (Exception $exp) {
-            throw new HttpException(JsonResponse::HTTP_INTERNAL_SERVER_ERROR, $exp->getMessage());
+            return $exp->getMessage();
+            // Log::error($exp->getMessage());
+            // throw new HttpException(JsonResponse::HTTP_INTERNAL_SERVER_ERROR, $exp->getMessage());
         }
     }
 }
