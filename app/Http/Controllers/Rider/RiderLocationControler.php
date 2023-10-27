@@ -58,9 +58,8 @@ class RiderLocationControler extends BaseController
             }
             return $this->sendSuccess($riders, $message);
         } catch (Exception $exp) {
-            return $exp->getMessage();
-            // Log::error($exp->getMessage());
-            // throw new HttpException(JsonResponse::HTTP_INTERNAL_SERVER_ERROR, $exp->getMessage());
+            // return $exp->getMessage();
+            throw new HttpException(JsonResponse::HTTP_INTERNAL_SERVER_ERROR, $exp->getMessage());
         }
     }
 }
