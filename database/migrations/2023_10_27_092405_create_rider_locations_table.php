@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('rider_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->string('service_name');
-            $table->string('lat');
-            $table->string('long');
+            $table->string('latitude');
+            $table->string('longitude');
             $table->timestamp('capture_time');
             $table->timestamps();
         });

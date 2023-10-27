@@ -47,7 +47,7 @@ class RiderLocationControler extends BaseController
 
                 $riders = RiderLocation::select('*')
                     ->selectRaw(
-                        "(6371  acos(cos(radians($latitude))  cos(radians(lat))  cos(radians(long) - radians($longitude)) + sin(radians($latitude))  sin(radians(lat)))) AS distance"
+                        "(6371  acos(cos(radians($latitude))  cos(radians(latitude))  cos(radians(longitude) - radians($longitude)) + sin(radians($latitude))  sin(radians(latitude)))) AS distance"
                     )
                     ->having('distance', '<', $distance)
                     ->orderBy('distance')

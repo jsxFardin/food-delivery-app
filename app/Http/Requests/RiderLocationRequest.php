@@ -23,8 +23,8 @@ class RiderLocationRequest extends FormRequest
     {
         return [
             'rider_id' => 'required|numeric',
-            'lat' => 'required',
-            'long' => 'required',
+            'latitude' => 'required',
+            'longitude' => 'required',
             'service_name' => 'required',
             'capture_time' => 'required',
         ];

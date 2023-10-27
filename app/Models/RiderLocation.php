@@ -11,8 +11,8 @@ class RiderLocation extends Model
 
     protected $fillable = [
         'rider_id',
-        'lat',
-        'long',
+        'latitude',
+        'longitude',
         'service_name',
         'capture_time',
     ];
