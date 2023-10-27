@@ -46,14 +46,22 @@ class RiderLocationControler extends BaseController
                 $longitude = $restaurant?->long;
                 $distance = 2;
 
-                $riders = RiderLocation::select('*')
+                $riders = RiderLocation::select('rider_locations.*')
                     ->selectRaw(
-                        "(6371 * ACOS(COS(RADIANS(?)) * COS(RADIANS(latitude)) * COS(RADIANS(longitude) - RADIANS(?)) + SIN(RADIANS(?)) * SIN(RADIANS(latitude))) AS distance"
+                        " ( 
+                            3959 * acos( 
+                                cos( radians(  ?  ) ) *
+                                cos( radians( latitude ) ) * 
+                                cos( radians( longitude ) - radians(?) ) + 
+                                sin( radians(  ?  ) ) *
+                                sin( radians( latitude ) ) 
+                            )
+                       ) AS distance"
                     )
-                    ->having('distance', '<', $distance)
+                    ->having('distance', '<', '?')
                     ->orderBy('distance')
                     ->whereBetween('capture_time', [$startTime, $endTime])
-                    ->setBindings([$latitude, $longitude, $latitude])
+                    ->setBindings([$latitude, $longitude, $latitude, $distance])
                     ->get();
             }
             return $this->sendSuccess($riders, $message);
