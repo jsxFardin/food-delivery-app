@@ -58,15 +58,19 @@ class RiderLocationControler extends BaseController
                             )
                        ) AS distance"
                     )
-                    ->having('distance', '<', '?')
+                    ->having('distance', '<', $distance)
                     ->orderBy('distance')
+                    ->setBindings([$latitude, $longitude, $latitude])
                     ->whereBetween('capture_time', [$startTime, $endTime])
-                    ->setBindings([$latitude, $longitude, $latitude, $distance])
                     ->get();
+                    
+                if (!empty($riders)) {
+                    $message = 'Data found!';
+                }
             }
             return $this->sendSuccess($riders, $message);
         } catch (Exception $exp) {
-            // return $exp->getMessage();
+            return $exp->getMessage();
             throw new HttpException(JsonResponse::HTTP_INTERNAL_SERVER_ERROR, $exp->getMessage());
         }
     }
